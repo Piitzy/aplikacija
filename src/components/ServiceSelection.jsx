@@ -16,6 +16,8 @@ import {
     FaCheck,
     FaSave,
     FaInfoCircle,
+    FaMoon,
+    FaSun
 } from "react-icons/fa";
 import {
     Card,
@@ -52,6 +54,46 @@ import {
     OutlineButton,
     Notification,
 } from "../styles/StyledComponents";
+
+// Theme configurations
+const themes = {
+    dark: {
+        name: 'dark',
+        background: '#1a2233',
+        cardBackground: '#212d45',
+        inputBackground: '#2a3751',
+        headerBackground: '#2a3751',
+        activeBackground: '#3a4f77',
+        summaryBackground: '#3a4f77',
+        border: '#34405c',
+        divider: '#2c3548',
+        primaryText: '#e9edf7',
+        secondaryText: '#b8c2d8',
+        mutedText: '#a4b1d7',
+        accent: '#4a7dff',
+        buttonBackground: '#4a7dff',
+        removeBackground: '#bf4c4c',
+        highlightBackground: '#2e4170'
+    },
+    light: {
+        name: 'light',
+        background: '#f5f7fa',
+        cardBackground: '#ffffff',
+        inputBackground: '#f0f2f5',
+        headerBackground: '#ebeef5',
+        activeBackground: '#e1e7f5',
+        summaryBackground: '#e8ecf8',
+        border: '#d1d9e6',
+        divider: '#e5e9f0',
+        primaryText: '#2c3e50',
+        secondaryText: '#5c6b7a',
+        mutedText: '#8896a6',
+        accent: '#3275eb',
+        buttonBackground: '#3275eb',
+        removeBackground: '#e74c3c',
+        highlightBackground: '#dce4f7'
+    }
+};
 
 // Sample service data (in a real app, this would come from API)
 const serviceCategories = {
@@ -151,6 +193,11 @@ const ServiceSelection = () => {
     const [projectName, setProjectName] = useState("");
     const [clientName, setClientName] = useState("");
     const [showInvoice, setShowInvoice] = useState(false);
+    const [theme, setTheme] = useState(themes.dark);
+
+    const toggleTheme = () => {
+        setTheme(theme.name === 'dark' ? themes.light : themes.dark);
+    };
 
     const handleCategoryChange = (category) => {
         setActiveCategory(category);
@@ -279,19 +326,19 @@ const ServiceSelection = () => {
     };
 
     const cardStyle = {
-        background: '#1a2233',
+        background: theme.background,
         borderRadius: '12px',
-        border: '1px solid #2c3548',
+        border: `1px solid ${theme.border}`,
         marginBottom: '1.5rem',
         padding: '1.5rem',
-        color: '#e9edf7'
+        color: theme.primaryText
     };
 
     const sectionTitleStyle = {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        color: '#e9edf7',
+        color: theme.primaryText,
         fontWeight: 600,
         fontSize: '1.25rem',
         marginBottom: '1.25rem'
@@ -299,13 +346,37 @@ const ServiceSelection = () => {
 
     const dividerStyle = {
         height: '1px',
-        background: '#2c3548',
+        background: theme.divider,
         margin: '1.5rem 0'
     };
 
     return (
         <>
-            <div style={{ padding: '0.5rem' }}>
+            <div style={{ padding: '0.5rem', background: theme.background, minHeight: '100vh' }}>
+                {/* Theme Toggle */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+                    <motion.button 
+                        onClick={toggleTheme}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{
+                            background: theme.accent,
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '40px',
+                            height: '40px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: '#ffffff',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+                        }}
+                    >
+                        {theme.name === 'dark' ? <FaSun /> : <FaMoon />}
+                    </motion.button>
+                </div>
+
                 {/* Project Details Section */}
                 <div style={cardStyle}>
                     <div style={sectionTitleStyle}>
@@ -316,12 +387,12 @@ const ServiceSelection = () => {
                         gap: '2rem', 
                         marginBottom: '1rem',
                         padding: '1.5rem',
-                        background: '#212d45',
+                        background: theme.cardBackground,
                         borderRadius: '8px',
-                        border: '1px solid #34405c'
+                        border: `1px solid ${theme.border}`
                     }}>
                         <div style={{ flex: 1 }}>
-                            <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.6rem', display: 'block' }}>Project Name *</ParamLabel>
+                            <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.6rem', display: 'block' }}>Project Name *</ParamLabel>
                             <ParamInput
                                 type="text"
                                 value={projectName}
@@ -329,9 +400,9 @@ const ServiceSelection = () => {
                                 placeholder="Enter project name"
                                 style={{ 
                                     width: '100%', 
-                                    background: '#2a3751', 
-                                    border: '1px solid #34405c', 
-                                    color: '#e9edf7',
+                                    background: theme.inputBackground, 
+                                    border: `1px solid ${theme.border}`, 
+                                    color: theme.primaryText,
                                     padding: '10px 15px',
                                     borderRadius: '6px',
                                     fontSize: '1rem'
@@ -339,7 +410,7 @@ const ServiceSelection = () => {
                             />
                         </div>
                         <div style={{ flex: 1 }}>
-                            <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.6rem', display: 'block' }}>Client Name</ParamLabel>
+                            <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.6rem', display: 'block' }}>Client Name</ParamLabel>
                             <ParamInput
                                 type="text"
                                 value={clientName}
@@ -347,9 +418,9 @@ const ServiceSelection = () => {
                                 placeholder="Enter client name"
                                 style={{ 
                                     width: '100%', 
-                                    background: '#2a3751', 
-                                    border: '1px solid #34405c', 
-                                    color: '#e9edf7',
+                                    background: theme.inputBackground, 
+                                    border: `1px solid ${theme.border}`, 
+                                    color: theme.primaryText,
                                     padding: '10px 15px',
                                     borderRadius: '6px',
                                     fontSize: '1rem'
@@ -361,12 +432,12 @@ const ServiceSelection = () => {
                     <div style={dividerStyle}></div>
 
                     <FlexContainer>
-                        <CategoriesContainer style={{ background: '#212d45', borderRadius: '8px', padding: '10px' }}>
+                        <CategoriesContainer style={{ background: theme.cardBackground, borderRadius: '8px', padding: '10px' }}>
                             {Object.entries(serviceCategories).map(([key, category]) => (
                                 <CategoryButton key={key} active={activeCategory === key} onClick={() => handleCategoryChange(key)}
                                     style={{ 
-                                        color: activeCategory === key ? '#fff' : '#b8c2d8',
-                                        background: activeCategory === key ? '#3a4f77' : 'transparent',
+                                        color: activeCategory === key ? theme.primaryText : theme.secondaryText,
+                                        background: activeCategory === key ? theme.activeBackground : 'transparent',
                                         padding: '12px 16px',
                                         margin: '4px 0',
                                         borderRadius: '6px',
@@ -399,9 +470,9 @@ const ServiceSelection = () => {
                                             selected={!!selectedServices[service.id]}
                                             whileHover={{ y: -5 }}
                                             style={{ 
-                                                background: selectedServices[service.id] ? '#3a4f77' : '#212d45',
-                                                color: '#e9edf7',
-                                                border: '1px solid #34405c',
+                                                background: selectedServices[service.id] ? theme.activeBackground : theme.cardBackground,
+                                                color: theme.primaryText,
+                                                border: `1px solid ${theme.border}`,
                                                 borderRadius: '8px',
                                                 padding: '12px 16px'
                                             }}
@@ -412,7 +483,7 @@ const ServiceSelection = () => {
                                                 checked={!!selectedServices[service.id]}
                                                 onChange={() => handleServiceToggle(service)}
                                             />
-                                            <ServiceLabel htmlFor={service.id} style={{ color: '#e9edf7' }}>{service.name}</ServiceLabel>
+                                            <ServiceLabel htmlFor={service.id} style={{ color: theme.primaryText }}>{service.name}</ServiceLabel>
                                         </ServiceItem>
                                     ))}
                                 </ServicesGrid>
@@ -428,7 +499,7 @@ const ServiceSelection = () => {
                     </div>
 
                     {Object.keys(selectedServices).length === 0 ? (
-                        <EmptyState style={{ background: '#212d45', color: '#b8c2d8', padding: '3rem' }}>
+                        <EmptyState style={{ background: theme.cardBackground, color: theme.secondaryText, padding: '3rem' }}>
                             <FaClipboardList style={{ fontSize: '2rem', marginBottom: '1rem' }}/>
                             <EmptyStateText style={{ fontSize: '1.1rem' }}>No services selected yet</EmptyStateText>
                             <EmptyStateText style={{ opacity: 0.7 }}>Check the services you need from the categories above</EmptyStateText>
@@ -446,8 +517,8 @@ const ServiceSelection = () => {
                                         exit={{ opacity: 0, x: -20 }}
                                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                         style={{ 
-                                            background: '#212d45', 
-                                            border: '1px solid #34405c',
+                                            background: theme.cardBackground, 
+                                            border: `1px solid ${theme.border}`,
                                             borderRadius: '10px',
                                             marginBottom: '1rem',
                                             overflow: 'hidden'
@@ -455,10 +526,10 @@ const ServiceSelection = () => {
                                     >
                                         <ServiceHeader style={{ 
                                             padding: '12px 16px',
-                                            background: '#2a3751',
-                                            borderBottom: '1px solid #34405c'
+                                            background: theme.headerBackground,
+                                            borderBottom: `1px solid ${theme.border}`
                                         }}>
-                                            <ServiceTitle style={{ color: '#e9edf7', fontWeight: 600 }}>
+                                            <ServiceTitle style={{ color: theme.primaryText, fontWeight: 600 }}>
                                                 <FaInfoCircle /> {service.name}
                                             </ServiceTitle>
                                         </ServiceHeader>
@@ -470,7 +541,7 @@ const ServiceSelection = () => {
                                                 gap: '1rem' 
                                             }}>
                                                 <ParamGroup>
-                                                    <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.5rem', display: 'block' }}>Min Hours</ParamLabel>
+                                                    <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.5rem', display: 'block' }}>Min Hours</ParamLabel>
                                                     <ParamInput
                                                         type="number"
                                                         value={service.minHours}
@@ -478,9 +549,9 @@ const ServiceSelection = () => {
                                                             handleServiceParamChange(service.id, "minHours", e.target.value)
                                                         }
                                                         style={{ 
-                                                            background: '#2a3751', 
-                                                            border: '1px solid #34405c', 
-                                                            color: '#e9edf7',
+                                                            background: theme.inputBackground, 
+                                                            border: `1px solid ${theme.border}`, 
+                                                            color: theme.primaryText,
                                                             width: '100%',
                                                             padding: '8px 12px',
                                                             borderRadius: '6px'
@@ -488,7 +559,7 @@ const ServiceSelection = () => {
                                                     />
                                                 </ParamGroup>
                                                 <ParamGroup>
-                                                    <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.5rem', display: 'block' }}>Max Hours</ParamLabel>
+                                                    <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.5rem', display: 'block' }}>Max Hours</ParamLabel>
                                                     <ParamInput
                                                         type="number"
                                                         value={service.maxHours}
@@ -496,9 +567,9 @@ const ServiceSelection = () => {
                                                             handleServiceParamChange(service.id, "maxHours", e.target.value)
                                                         }
                                                         style={{ 
-                                                            background: '#2a3751', 
-                                                            border: '1px solid #34405c', 
-                                                            color: '#e9edf7',
+                                                            background: theme.inputBackground, 
+                                                            border: `1px solid ${theme.border}`, 
+                                                            color: theme.primaryText,
                                                             width: '100%',
                                                             padding: '8px 12px',
                                                             borderRadius: '6px'
@@ -506,7 +577,7 @@ const ServiceSelection = () => {
                                                     />
                                                 </ParamGroup>
                                                 <ParamGroup>
-                                                    <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.5rem', display: 'block' }}>Maturity (%)</ParamLabel>
+                                                    <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.5rem', display: 'block' }}>Maturity (%)</ParamLabel>
                                                     <ParamInput
                                                         type="number"
                                                         min="0"
@@ -516,9 +587,9 @@ const ServiceSelection = () => {
                                                             handleServiceParamChange(service.id, "maturity", e.target.value)
                                                         }
                                                         style={{ 
-                                                            background: '#2a3751', 
-                                                            border: '1px solid #34405c', 
-                                                            color: '#e9edf7',
+                                                            background: theme.inputBackground, 
+                                                            border: `1px solid ${theme.border}`, 
+                                                            color: theme.primaryText,
                                                             width: '100%',
                                                             padding: '8px 12px',
                                                             borderRadius: '6px'
@@ -526,7 +597,7 @@ const ServiceSelection = () => {
                                                     />
                                                 </ParamGroup>
                                                 <ParamGroup>
-                                                    <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.5rem', display: 'block' }}>Markup (%)</ParamLabel>
+                                                    <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.5rem', display: 'block' }}>Markup (%)</ParamLabel>
                                                     <ParamInput
                                                         type="number"
                                                         value={service.markup}
@@ -534,9 +605,9 @@ const ServiceSelection = () => {
                                                             handleServiceParamChange(service.id, "markup", e.target.value)
                                                         }
                                                         style={{ 
-                                                            background: '#2a3751', 
-                                                            border: '1px solid #34405c', 
-                                                            color: '#e9edf7',
+                                                            background: theme.inputBackground, 
+                                                            border: `1px solid ${theme.border}`, 
+                                                            color: theme.primaryText,
                                                             width: '100%',
                                                             padding: '8px 12px',
                                                             borderRadius: '6px'
@@ -544,7 +615,7 @@ const ServiceSelection = () => {
                                                     />
                                                 </ParamGroup>
                                                 <ParamGroup>
-                                                    <ParamLabel style={{ color: '#b8c2d8', marginBottom: '0.5rem', display: 'block' }}>Rate/Hour ($)</ParamLabel>
+                                                    <ParamLabel style={{ color: theme.secondaryText, marginBottom: '0.5rem', display: 'block' }}>Rate/Hour ($)</ParamLabel>
                                                     <ParamInput
                                                         type="number"
                                                         value={service.hourlyRate}
@@ -552,9 +623,9 @@ const ServiceSelection = () => {
                                                             handleServiceParamChange(service.id, "hourlyRate", e.target.value)
                                                         }
                                                         style={{ 
-                                                            background: '#2a3751', 
-                                                            border: '1px solid #34405c', 
-                                                            color: '#e9edf7',
+                                                            background: theme.inputBackground, 
+                                                            border: `1px solid ${theme.border}`, 
+                                                            color: theme.primaryText,
                                                             width: '100%',
                                                             padding: '8px 12px',
                                                             borderRadius: '6px'
@@ -569,10 +640,10 @@ const ServiceSelection = () => {
                                                 alignItems: 'center',
                                                 marginTop: '1rem',
                                                 paddingTop: '1rem',
-                                                borderTop: '1px solid #34405c'
+                                                borderTop: `1px solid ${theme.border}`
                                             }}>
                                                 <div style={{ 
-                                                    color: '#e9edf7',
+                                                    color: theme.primaryText,
                                                     fontWeight: 600
                                                 }}>
                                                     Price: {price.min.toFixed(2)} - {price.max.toFixed(2)} $
@@ -582,8 +653,8 @@ const ServiceSelection = () => {
                                                     onClick={() => handleRemoveService(service.id)}
                                                     whileHover={{ rotate: 90 }}
                                                     style={{ 
-                                                        background: '#bf4c4c', 
-                                                        color: '#e9edf7',
+                                                        background: theme.removeBackground, 
+                                                        color: '#ffffff',
                                                         width: '36px',
                                                         height: '36px',
                                                         borderRadius: '50%',
@@ -611,20 +682,20 @@ const ServiceSelection = () => {
                         <FaChartPie /> Project Summary
                     </div>
 
-                    <SummaryCard style={{ background: '#212d45', border: '1px solid #34405c', color: '#e9edf7', borderRadius: '8px', padding: '1rem' }}>
+                    <SummaryCard style={{ background: theme.cardBackground, border: `1px solid ${theme.border}`, color: theme.primaryText, borderRadius: '8px', padding: '1rem' }}>
                         {Object.keys(selectedServices).length > 0 ? (
                             <>
-                                <SummaryTable style={{ color: '#e9edf7', width: '100%', borderCollapse: 'collapse' }}>
+                                <SummaryTable style={{ color: theme.primaryText, width: '100%', borderCollapse: 'collapse' }}>
                                     <TableHead>
-                                        <tr style={{ borderBottom: '1px solid #34405c' }}>
-                                            <th style={{ textAlign: 'left', padding: '12px', backgroundColor: '#2a3751' }}>Service</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: '#2a3751' }}>Min Hours</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: '#2a3751' }}>Max Hours</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: '#2a3751' }}>Maturity</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: '#2a3751' }}>Markup (%)</th>
-                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: '#2a3751' }}>Rate/Hour</th>
-                                            <th style={{ textAlign: 'right', padding: '12px', backgroundColor: '#2a3751' }}>Min Price</th>
-                                            <th style={{ textAlign: 'right', padding: '12px', backgroundColor: '#2a3751' }}>Max Price</th>
+                                        <tr style={{ borderBottom: `1px solid ${theme.border}` }}>
+                                            <th style={{ textAlign: 'left', padding: '12px', backgroundColor: theme.headerBackground }}>Service</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: theme.headerBackground }}>Min Hours</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: theme.headerBackground }}>Max Hours</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: theme.headerBackground }}>Maturity</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: theme.headerBackground }}>Markup (%)</th>
+                                            <th style={{ textAlign: 'center', padding: '12px', backgroundColor: theme.headerBackground }}>Rate/Hour</th>
+                                            <th style={{ textAlign: 'right', padding: '12px', backgroundColor: theme.headerBackground }}>Min Price</th>
+                                            <th style={{ textAlign: 'right', padding: '12px', backgroundColor: theme.headerBackground }}>Max Price</th>
                                         </tr>
                                     </TableHead>
 
@@ -633,8 +704,8 @@ const ServiceSelection = () => {
                                             const price = calculateServicePrice(service);
                                             return (
                                                 <tr key={service.id} style={{ 
-                                                    backgroundColor: index % 2 === 0 ? '#2a3751' : '#212d45',
-                                                    borderBottom: '1px solid #34405c'
+                                                    backgroundColor: index % 2 === 0 ? theme.headerBackground : theme.cardBackground,
+                                                    borderBottom: `1px solid ${theme.border}`
                                                 }}>
                                                     <td style={{ padding: '10px 12px' }}>{service.name}</td>
                                                     <td style={{ textAlign: 'center', padding: '10px 12px' }}>{service.minHours}</td>
@@ -650,7 +721,7 @@ const ServiceSelection = () => {
                                     </TableBody>
 
                                     <TableFoot>
-                                        <tr style={{ backgroundColor: '#3a4f77' }}>
+                                        <tr style={{ backgroundColor: theme.summaryBackground }}>
                                             <td style={{ padding: '12px', fontWeight: 'bold' }}>TOTAL</td>
                                             <td style={{ textAlign: 'center', padding: '12px', fontWeight: 'bold' }}>{totals.minHours}</td>
                                             <td style={{ textAlign: 'center', padding: '12px', fontWeight: 'bold' }}>{totals.maxHours}</td>
@@ -668,13 +739,13 @@ const ServiceSelection = () => {
                                     marginTop: '1rem',
                                     fontSize: '1.25rem',
                                     fontWeight: 'bold',
-                                    color: '#e9edf7'
+                                    color: theme.primaryText
                                 }}>
                                     Grand Total: {totals.minPrice} - {totals.maxPrice} $
                                 </div>
                             </>
                         ) : (
-                            <EmptyState style={{ background: '#212d45', color: '#b8c2d8', padding: '3rem' }}>
+                            <EmptyState style={{ background: theme.cardBackground, color: theme.secondaryText, padding: '3rem' }}>
                                 <FaChartPie style={{ fontSize: '2rem', marginBottom: '1rem' }} />
                                 <EmptyStateText style={{ fontSize: '1.1rem' }}>No services selected yet</EmptyStateText>
                                 <EmptyStateText style={{ opacity: 0.7 }}>Select services to see the project summary</EmptyStateText>
@@ -690,36 +761,36 @@ const ServiceSelection = () => {
                             <FaClipboardList /> Invoice
                         </div>
                         
-                        <div style={{ background: '#212d45', padding: '2rem', borderRadius: '8px', border: '1px solid #34405c' }}>
+                        <div style={{ background: theme.cardBackground, padding: '2rem', borderRadius: '8px', border: `1px solid ${theme.border}` }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
                                 <div>
-                                    <h2 style={{ color: '#e9edf7', marginBottom: '0.5rem' }}>INVOICE</h2>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>Invoice #: {projectId}</p>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>Date: {new Date().toLocaleDateString()}</p>
+                                    <h2 style={{ color: theme.primaryText, marginBottom: '0.5rem' }}>INVOICE</h2>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>Invoice #: {projectId}</p>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>Date: {new Date().toLocaleDateString()}</p>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                    <h3 style={{ color: '#e9edf7', marginBottom: '0.5rem' }}>Power Commerce</h3>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>123 Business Street</p>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>Business City, BC 12345</p>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>contact@powercommerce.com</p>
+                                    <h3 style={{ color: theme.primaryText, marginBottom: '0.5rem' }}>Power Commerce</h3>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>123 Business Street</p>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>Business City, BC 12345</p>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>contact@powercommerce.com</p>
                                 </div>
                             </div>
                             
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
                                 <div>
-                                    <h4 style={{ color: '#e9edf7', marginBottom: '0.5rem' }}>Bill To:</h4>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>{clientName || 'Client Name'}</p>
-                                    <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>Project: {projectName}</p>
+                                    <h4 style={{ color: theme.primaryText, marginBottom: '0.5rem' }}>Bill To:</h4>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>{clientName || 'Client Name'}</p>
+                                    <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>Project: {projectName}</p>
                                 </div>
                                 <div style={{ 
-                                    background: '#2e4170', 
+                                    background: theme.highlightBackground, 
                                     padding: '1rem', 
                                     borderRadius: '8px',
                                     minWidth: '200px',
                                     textAlign: 'center'
                                 }}>
-                                    <h3 style={{ color: '#e9edf7', marginBottom: '0.5rem' }}>Total Due</h3>
-                                    <p style={{ color: '#e9edf7', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                                    <h3 style={{ color: theme.primaryText, marginBottom: '0.5rem' }}>Total Due</h3>
+                                    <p style={{ color: theme.primaryText, fontSize: '1.5rem', fontWeight: 'bold' }}>
                                         {totals.minPrice} - {totals.maxPrice} $
                                     </p>
                                 </div>
@@ -729,15 +800,15 @@ const ServiceSelection = () => {
                                 width: '100%', 
                                 borderCollapse: 'collapse', 
                                 marginBottom: '2rem',
-                                color: '#e9edf7'
+                                color: theme.primaryText
                             }}>
                                 <thead>
-                                    <tr style={{ borderBottom: '1px solid #34405c' }}>
-                                        <th style={{ textAlign: 'left', padding: '0.75rem', backgroundColor: '#2a3751' }}>Service</th>
-                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: '#2a3751' }}>Hours Range</th>
-                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: '#2a3751' }}>Rate</th>
-                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: '#2a3751' }}>Markup</th>
-                                        <th style={{ textAlign: 'right', padding: '0.75rem', backgroundColor: '#2a3751' }}>Amount</th>
+                                    <tr style={{ borderBottom: `1px solid ${theme.border}` }}>
+                                        <th style={{ textAlign: 'left', padding: '0.75rem', backgroundColor: theme.headerBackground }}>Service</th>
+                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: theme.headerBackground }}>Hours Range</th>
+                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: theme.headerBackground }}>Rate</th>
+                                        <th style={{ textAlign: 'center', padding: '0.75rem', backgroundColor: theme.headerBackground }}>Markup</th>
+                                        <th style={{ textAlign: 'right', padding: '0.75rem', backgroundColor: theme.headerBackground }}>Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -745,8 +816,8 @@ const ServiceSelection = () => {
                                         const price = calculateServicePrice(service);
                                         return (
                                             <tr key={service.id} style={{ 
-                                                backgroundColor: index % 2 === 0 ? '#2a3751' : '#212d45',
-                                                borderBottom: '1px solid #34405c'
+                                                backgroundColor: index % 2 === 0 ? theme.headerBackground : theme.cardBackground,
+                                                borderBottom: `1px solid ${theme.border}`
                                             }}>
                                                 <td style={{ padding: '0.75rem' }}>{service.name}</td>
                                                 <td style={{ textAlign: 'center', padding: '0.75rem' }}>
@@ -762,7 +833,7 @@ const ServiceSelection = () => {
                                     })}
                                 </tbody>
                                 <tfoot>
-                                    <tr style={{ backgroundColor: '#3a4f77' }}>
+                                    <tr style={{ backgroundColor: theme.summaryBackground }}>
                                         <td colSpan="4" style={{ textAlign: 'right', padding: '0.75rem', fontWeight: 'bold' }}>
                                             Grand Total:
                                         </td>
@@ -774,14 +845,14 @@ const ServiceSelection = () => {
                             </table>
                             
                             <div style={{ marginBottom: '2rem' }}>
-                                <h4 style={{ color: '#e9edf7', marginBottom: '0.5rem' }}>Notes:</h4>
-                                <p style={{ color: '#b8c2d8', margin: '0.25rem 0' }}>
+                                <h4 style={{ color: theme.primaryText, marginBottom: '0.5rem' }}>Notes:</h4>
+                                <p style={{ color: theme.secondaryText, margin: '0.25rem 0' }}>
                                     Thank you for your business. Payment is due within 30 days of invoice date.
                                 </p>
                             </div>
                             
-                            <div style={{ textAlign: 'center', marginTop: '2rem', borderTop: '1px solid #34405c', paddingTop: '1rem' }}>
-                                <p style={{ color: '#b8c2d8' }}>Power Commerce © {new Date().getFullYear()}</p>
+                            <div style={{ textAlign: 'center', marginTop: '2rem', borderTop: `1px solid ${theme.border}`, paddingTop: '1rem' }}>
+                                <p style={{ color: theme.secondaryText }}>Power Commerce © {new Date().getFullYear()}</p>
                             </div>
                         </div>
                     </div>
@@ -790,15 +861,15 @@ const ServiceSelection = () => {
                 <ActionsContainer>
                     <OutlineButton style={{ 
                         background: 'transparent', 
-                        borderColor: '#4a638e', 
-                        color: '#e9edf7' 
+                        borderColor: theme.accent, 
+                        color: theme.primaryText 
                     }}>
                         <FaSave /> Save Draft
                     </OutlineButton>
                     <PrimaryButton onClick={handleSaveProject} style={{ 
-                        background: '#4a7dff', 
+                        background: theme.buttonBackground, 
                         color: '#ffffff',
-                        borderColor: '#4a7dff'
+                        borderColor: theme.buttonBackground
                     }}>
                         <FaCheck /> Save Project
                     </PrimaryButton>
@@ -811,9 +882,9 @@ const ServiceSelection = () => {
                         initial={{ opacity: 0, y: 50 }} 
                         animate={{ opacity: 1, y: 0 }} 
                         exit={{ opacity: 0, y: 50 }}
-                        style={{ background: '#2e4170', color: '#e9edf7', border: '1px solid #4a638e' }}
+                        style={{ background: theme.highlightBackground, color: theme.primaryText, border: `1px solid ${theme.border}` }}
                     >
-                        <FaCheckCircle />
+                        <FaCheckCircle style={{ color: theme.accent }} />
                         <div>
                             <div style={{ fontWeight: 600 }}>Project Saved!</div>
                             <div style={{ fontSize: "0.85rem", opacity: 0.9 }}>Project ID: {projectId}</div>
