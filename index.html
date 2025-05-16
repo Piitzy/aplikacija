@@ -1,0 +1,1657 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Project Management Tool</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <style>
+            :root {
+                --primary: #3b82f6;
+                --primary-dark: #2563eb;
+                --primary-light: #93c5fd;
+                --secondary: #64748b;
+                --success: #10b981;
+                --danger: #ef4444;
+                --warning: #f59e0b;
+                --background: #f8fafc;
+                --card-bg: #ffffff;
+                --text: #1e293b;
+                --text-light: #64748b;
+                --border: #e2e8f0;
+                --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+                --radius: 0.5rem;
+                --radius-lg: 1rem;
+                --transition: all 0.2s ease;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    Roboto,
+                    Oxygen,
+                    Ubuntu,
+                    Cantarell,
+                    "Open Sans",
+                    "Helvetica Neue",
+                    sans-serif;
+            }
+
+            body {
+                background-color: var(--background);
+                color: var(--text);
+                line-height: 1.6;
+                padding: 0;
+                overflow-x: hidden;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .app-layout {
+                display: grid;
+                grid-template-columns: 250px 1fr;
+                min-height: 100vh;
+            }
+
+            .sidebar {
+                background-color: #fff;
+                border-right: 1px solid var(--border);
+                padding: 1.5rem;
+                position: sticky;
+                top: 0;
+                height: 100vh;
+                overflow-y: auto;
+            }
+
+            .logo-area {
+                display: flex;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: var(--primary);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .menu-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .menu-title {
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: var(--text-light);
+                letter-spacing: 0.05em;
+                margin-bottom: 0.75rem;
+            }
+
+            .menu-item {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem 1rem;
+                border-radius: var(--radius);
+                color: var(--text);
+                font-weight: 500;
+                margin-bottom: 0.25rem;
+                transition: var(--transition);
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .menu-item i {
+                margin-right: 0.75rem;
+                font-size: 1.1rem;
+                width: 1.5rem;
+                text-align: center;
+            }
+
+            .menu-item:hover {
+                background-color: rgba(59, 130, 246, 0.05);
+                color: var(--primary);
+            }
+
+            .menu-item.active {
+                background-color: var(--primary);
+                color: white;
+            }
+
+            .main-content {
+                padding: 1.5rem 2rem;
+            }
+
+            .header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: var(--text);
+            }
+
+            .header-actions {
+                display: flex;
+                gap: 1rem;
+                align-items: center;
+            }
+
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background-color: var(--primary-light);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--primary-dark);
+                font-weight: 600;
+            }
+
+            .card {
+                background-color: var(--card-bg);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow);
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                transition: var(--transition);
+                border: 1px solid var(--border);
+            }
+
+            .card:hover {
+                box-shadow: var(--shadow-lg);
+            }
+
+            .flex {
+                display: flex;
+            }
+
+            .gap-4 {
+                gap: 1rem;
+            }
+
+            .categories {
+                width: 250px;
+                flex-shrink: 0;
+            }
+
+            .category-btn {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                text-align: left;
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.5rem;
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-weight: 500;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+
+            .category-btn i {
+                margin-right: 0.75rem;
+                opacity: 0.7;
+            }
+
+            .category-btn:hover {
+                border-color: var(--primary);
+                transform: translateY(-2px);
+            }
+
+            .category-btn.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+            .category-btn.active i {
+                opacity: 1;
+            }
+
+            .services-container {
+                flex: 1;
+                padding-left: 1.5rem;
+                border-left: 1px solid var(--border);
+            }
+
+            .services-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1rem;
+            }
+
+            .service-item {
+                display: flex;
+                align-items: center;
+                padding: 1rem;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                transition: var(--transition);
+                background-color: var(--card-bg);
+            }
+
+            .service-item:hover {
+                border-color: var(--primary);
+                background-color: rgba(59, 130, 246, 0.05);
+                transform: translateY(-2px);
+            }
+
+            .service-checkbox {
+                margin-right: 0.75rem;
+                width: 18px;
+                height: 18px;
+                cursor: pointer;
+                accent-color: var(--primary);
+            }
+
+            .service-label {
+                cursor: pointer;
+                font-size: 0.95rem;
+                font-weight: 500;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                margin-bottom: 1.25rem;
+                color: var(--text);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            h2 i {
+                color: var(--primary);
+            }
+
+            .selected-services {
+                margin-top: 2rem;
+            }
+
+            .selected-service-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 1.25rem;
+                margin-bottom: 1rem;
+                background-color: #f1f5f9;
+                border-radius: var(--radius-lg);
+                position: relative;
+                transition: var(--transition);
+                border-left: 4px solid var(--primary);
+            }
+
+            .selected-service-item:hover {
+                box-shadow: var(--shadow);
+            }
+
+            .service-details {
+                flex: 1;
+            }
+
+            .service-title {
+                font-weight: 600;
+                margin-bottom: 1rem;
+                color: var(--text);
+                font-size: 1.05rem;
+            }
+
+            .service-params {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1rem;
+                margin-top: 0.5rem;
+            }
+
+            .param-input {
+                padding: 0.5rem 0.75rem;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 0.9rem;
+                width: 100%;
+                transition: var(--transition);
+            }
+
+            .param-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            }
+
+            .param-label {
+                display: block;
+                font-size: 0.75rem;
+                color: var(--text-light);
+                margin-bottom: 0.35rem;
+                font-weight: 500;
+            }
+
+            .service-price {
+                display: flex;
+                align-items: center;
+                font-weight: 600;
+                background-color: var(--primary);
+                color: white;
+                padding: 0 1.25rem;
+                border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+                margin: -1.25rem -1.25rem -1.25rem 1rem;
+                min-width: 140px;
+                justify-content: center;
+            }
+
+            .remove-service {
+                background: none;
+                border: none;
+                color: var(--danger);
+                cursor: pointer;
+                font-size: 1.1rem;
+                position: absolute;
+                top: 0.75rem;
+                right: 160px;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+            }
+
+            .remove-service:hover {
+                background-color: rgba(220, 53, 69, 0.1);
+            }
+
+            .empty-state {
+                text-align: center;
+                padding: 3rem 1rem;
+                color: var(--text-light);
+                background-color: rgba(100, 116, 139, 0.05);
+                border-radius: var(--radius-lg);
+                border: 2px dashed var(--border);
+            }
+
+            .empty-state i {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            .empty-state p {
+                font-size: 1.05rem;
+                margin-bottom: 1rem;
+            }
+
+            .pricing-section {
+                margin-top: 2rem;
+            }
+
+            .summary-card {
+                background-color: #f1f5f9;
+                border-radius: var(--radius-lg);
+                padding: 1.5rem;
+            }
+
+            .service-total {
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                margin-top: 1.5rem;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--text);
+            }
+
+            .service-total span {
+                display: inline-block;
+                padding: 0.75rem 1.25rem;
+                background-color: var(--primary);
+                color: white;
+                border-radius: var(--radius);
+                margin-left: 0.75rem;
+                min-width: 200px;
+                text-align: center;
+            }
+
+            .summary-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 1rem;
+                background-color: white;
+                border-radius: var(--radius);
+                overflow: hidden;
+                box-shadow: var(--shadow);
+            }
+
+            .summary-table th,
+            .summary-table td {
+                padding: 0.75rem 1rem;
+                text-align: left;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .summary-table th {
+                background-color: rgba(59, 130, 246, 0.05);
+                font-weight: 600;
+                font-size: 0.9rem;
+                color: var(--text);
+            }
+
+            .summary-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .summary-table tr:hover {
+                background-color: rgba(59, 130, 246, 0.02);
+            }
+
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: var(--radius);
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: var(--transition);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .btn i {
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                background-color: var(--primary);
+                color: white;
+            }
+
+            .btn-primary:hover {
+                background-color: var(--primary-dark);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+            }
+
+            .btn-outline {
+                background-color: transparent;
+                color: var(--primary);
+                border: 1px solid var(--primary);
+            }
+
+            .btn-outline:hover {
+                background-color: rgba(59, 130, 246, 0.05);
+                transform: translateY(-2px);
+            }
+
+            .mt-4 {
+                margin-top: 1rem;
+            }
+
+            .actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .badge {
+                display: inline-block;
+                padding: 0.25rem 0.5rem;
+                border-radius: 9999px;
+                font-size: 0.75rem;
+                font-weight: 600;
+            }
+
+            .badge-success {
+                background-color: rgba(16, 185, 129, 0.1);
+                color: var(--success);
+            }
+
+            .badge-warning {
+                background-color: rgba(245, 158, 11, 0.1);
+                color: var(--warning);
+            }
+
+            .stat-cards {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background-color: white;
+                border-radius: var(--radius);
+                padding: 1.25rem;
+                box-shadow: var(--shadow);
+                border: 1px solid var(--border);
+            }
+
+            .stat-card-title {
+                font-size: 0.875rem;
+                color: var(--text-light);
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-card-value {
+                font-size: 1.5rem;
+                font-weight: 600;
+                color: var(--text);
+            }
+
+            .stat-card-footer {
+                display: flex;
+                align-items: center;
+                margin-top: 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .stat-card-footer.positive {
+                color: var(--success);
+            }
+
+            .stat-card-footer.negative {
+                color: var(--danger);
+            }
+
+            .trend-icon {
+                margin-right: 0.25rem;
+            }
+
+            @media (max-width: 992px) {
+                .app-layout {
+                    grid-template-columns: 1fr;
+                }
+
+                .sidebar {
+                    display: none;
+                }
+
+                .service-params {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .flex {
+                    flex-direction: column;
+                }
+
+                .categories {
+                    width: 100%;
+                    margin-bottom: 1.5rem;
+                }
+
+                .services-container {
+                    padding-left: 0;
+                    border-left: none;
+                }
+
+                .stat-cards {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .service-price {
+                    position: static;
+                    margin: 1rem 0 0 0;
+                    width: 100%;
+                    border-radius: var(--radius);
+                    padding: 0.75rem;
+                }
+
+                .remove-service {
+                    top: 0.75rem;
+                    right: 0.75rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .service-params {
+                    grid-template-columns: 1fr;
+                }
+
+                .stat-cards {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Dark mode support */
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background: #0f172a;
+                    --card-bg: #1e293b;
+                    --text: #f1f5f9;
+                    --text-light: #94a3b8;
+                    --border: #334155;
+                }
+
+                .sidebar {
+                    background-color: #1e293b;
+                }
+
+                .selected-service-item {
+                    background-color: #334155;
+                }
+
+                .summary-card {
+                    background-color: #1e293b;
+                }
+
+                .summary-table {
+                    background-color: #1e293b;
+                }
+
+                .summary-table th {
+                    background-color: #334155;
+                }
+
+                .stat-card {
+                    background-color: #1e293b;
+                }
+
+                .empty-state {
+                    background-color: #334155;
+                    border-color: #475569;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app-layout">
+            <div class="sidebar">
+                <div class="logo-area">
+                    <div class="logo">
+                        <i class="fas fa-briefcase"></i>
+                        <span>PM Tool</span>
+                    </div>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-title">Main</div>
+                    <a href="#" class="menu-item active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-folder"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-tasks"></i>
+                        <span>Tasks</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Calendar</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-title">Services</div>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-code"></i>
+                        <span>Development</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>Design</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-bullhorn"></i>
+                        <span>Marketing</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>SEO</span>
+                    </a>
+                </div>
+
+                <div class="menu-section">
+                    <div class="menu-title">Settings</div>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="header">
+                    <h1>Service Selection Tool</h1>
+                    <div class="header-actions">
+                        <div class="badge badge-success">Active Project</div>
+                        <div class="user-info">
+                            <div class="user-avatar">PM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <div class="stat-card-title">Total Projects</div>
+                        <div class="stat-card-value">24</div>
+                        <div class="stat-card-footer positive">
+                            <i class="fas fa-arrow-up trend-icon"></i> 12% from last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">Active Services</div>
+                        <div class="stat-card-value">42</div>
+                        <div class="stat-card-footer positive">
+                            <i class="fas fa-arrow-up trend-icon"></i> 8% from last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">Avg. Project Value</div>
+                        <div class="stat-card-value">$12,450</div>
+                        <div class="stat-card-footer positive">
+                            <i class="fas fa-arrow-up trend-icon"></i> 5% from last month
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-title">Completion Rate</div>
+                        <div class="stat-card-value">94%</div>
+                        <div class="stat-card-footer negative">
+                            <i class="fas fa-arrow-down trend-icon"></i> 2% from last month
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="flex gap-4">
+                        <div class="categories">
+                            <button class="category-btn active" data-category="development">
+                                <i class="fas fa-code"></i> Development & Integration
+                            </button>
+                            <button class="category-btn" data-category="design">
+                                <i class="fas fa-paint-brush"></i> Design & UX
+                            </button>
+                            <button class="category-btn" data-category="marketing">
+                                <i class="fas fa-bullhorn"></i> Marketing & Content
+                            </button>
+                            <button class="category-btn" data-category="seo">
+                                <i class="fas fa-search"></i> SEO & Optimization
+                            </button>
+                            <button class="category-btn" data-category="setup">
+                                <i class="fas fa-wrench"></i> Setup & Support
+                            </button>
+                            <button class="category-btn" data-category="website">
+                                <i class="fas fa-sitemap"></i> Website Structure
+                            </button>
+                            <button class="category-btn" data-category="contact">
+                                <i class="fas fa-envelope"></i> Contact & Engagement
+                            </button>
+                        </div>
+
+                        <div class="services-container">
+                            <h2><i class="fas fa-list"></i> Select Services</h2>
+                            <div class="services-grid" id="development">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"API Integration (ERP/CRM Systems)", "minHours": 10, "maxHours": 20, "markup": 100, "hourlyRate": 120}'
+                                    />
+                                    <label for="service1" class="service-label">API Integration (ERP/CRM Systems)</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"API Creation", "minHours": 8, "maxHours": 16, "markup": 90, "hourlyRate": 110}'
+                                    />
+                                    <label for="service2" class="service-label">API Creation</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Custom Shopify App Development", "minHours": 15, "maxHours": 30, "markup": 120, "hourlyRate": 130}'
+                                    />
+                                    <label for="service3" class="service-label">Custom Shopify App Development</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service4"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Third-Party App Integration & Configuration", "minHours": 5, "maxHours": 12, "markup": 80, "hourlyRate": 100}'
+                                    />
+                                    <label for="service4" class="service-label"
+                                        >Third-Party App Integration & Configuration</label
+                                    >
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service5"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Custom Feature Development", "minHours": 10, "maxHours": 25, "markup": 110, "hourlyRate": 115}'
+                                    />
+                                    <label for="service5" class="service-label">Custom Feature Development</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service6"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Custom Theme Development", "minHours": 12, "maxHours": 24, "markup": 100, "hourlyRate": 105}'
+                                    />
+                                    <label for="service6" class="service-label">Custom Theme Development</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service7"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Headless Commerce Development (Custom Storefront)", "minHours": 20, "maxHours": 40, "markup": 130, "hourlyRate": 140}'
+                                    />
+                                    <label for="service7" class="service-label"
+                                        >Headless Commerce Development (Custom Storefront)</label
+                                    >
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service8"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Shopify Plus Scripts Development", "minHours": 8, "maxHours": 18, "markup": 95, "hourlyRate": 120}'
+                                    />
+                                    <label for="service8" class="service-label">Shopify Plus Scripts Development</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service9"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Migration", "minHours": 15, "maxHours": 35, "markup": 85, "hourlyRate": 95}'
+                                    />
+                                    <label for="service9" class="service-label">Migration</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service10"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Data Migration & Import (Products/Customers/Orders)", "minHours": 10, "maxHours": 25, "markup": 80, "hourlyRate": 90}'
+                                    />
+                                    <label for="service10" class="service-label"
+                                        >Data Migration & Import (Products/Customers/Orders)</label
+                                    >
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="service11"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Platform Migration to Shopify", "minHours": 20, "maxHours": 45, "markup": 90, "hourlyRate": 100}'
+                                    />
+                                    <label for="service11" class="service-label">Platform Migration to Shopify</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="design" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="design1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Branding & Logo Design", "minHours": 5, "maxHours": 15, "markup": 100, "hourlyRate": 85}'
+                                    />
+                                    <label for="design1" class="service-label">Branding & Logo Design</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="design2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Custom Theme Design (UI/UX)", "minHours": 10, "maxHours": 20, "markup": 90, "hourlyRate": 95}'
+                                    />
+                                    <label for="design2" class="service-label">Custom Theme Design (UI/UX)</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="design3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Landing Page Design", "minHours": 8, "maxHours": 16, "markup": 85, "hourlyRate": 90}'
+                                    />
+                                    <label for="design3" class="service-label">Landing Page Design</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="design4"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Theme Customization (Visual Tweaks)", "minHours": 3, "maxHours": 8, "markup": 70, "hourlyRate": 80}'
+                                    />
+                                    <label for="design4" class="service-label">Theme Customization (Visual Tweaks)</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="design5"
+                                        class="service-checkbox"
+                                        data-service='{"name":"UX Audit & Usability Improvements", "minHours": 6, "maxHours": 12, "markup": 80, "hourlyRate": 100}'
+                                    />
+                                    <label for="design5" class="service-label">UX Audit & Usability Improvements</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="marketing" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="marketing1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Content Marketing & Copywriting", "minHours": 5, "maxHours": 15, "markup": 75, "hourlyRate": 70}'
+                                    />
+                                    <label for="marketing1" class="service-label">Content Marketing & Copywriting</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="marketing2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Email Marketing Campaigns & Automation", "minHours": 8, "maxHours": 20, "markup": 85, "hourlyRate": 80}'
+                                    />
+                                    <label for="marketing2" class="service-label">Email Marketing Campaigns & Automation</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="marketing3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"PPC Campaign Management (Google & Facebook Ads)", "minHours": 10, "maxHours": 25, "markup": 90, "hourlyRate": 90}'
+                                    />
+                                    <label for="marketing3" class="service-label"
+                                        >PPC Campaign Management (Google & Facebook Ads)</label
+                                    >
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="marketing4"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Social Media Marketing & Management", "minHours": 6, "maxHours": 18, "markup": 80, "hourlyRate": 65}'
+                                    />
+                                    <label for="marketing4" class="service-label">Social Media Marketing & Management</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="seo" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Backlink Building & Outreach", "minHours": 8, "maxHours": 20, "markup": 85, "hourlyRate": 75}'
+                                    />
+                                    <label for="seo1" class="service-label">Backlink Building & Outreach</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Content SEO & Keyword Optimization", "minHours": 6, "maxHours": 15, "markup": 80, "hourlyRate": 85}'
+                                    />
+                                    <label for="seo2" class="service-label">Content SEO & Keyword Optimization</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"On-Page SEO Optimization", "minHours": 5, "maxHours": 12, "markup": 75, "hourlyRate": 80}'
+                                    />
+                                    <label for="seo3" class="service-label">On-Page SEO Optimization</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo4"
+                                        class="service-checkbox"
+                                        data-service='{"name":"SEO Audit & Strategy", "minHours": 8, "maxHours": 16, "markup": 90, "hourlyRate": 95}'
+                                    />
+                                    <label for="seo4" class="service-label">SEO Audit & Strategy</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo5"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Technical SEO Enhancements", "minHours": 10, "maxHours": 24, "markup": 95, "hourlyRate": 105}'
+                                    />
+                                    <label for="seo5" class="service-label">Technical SEO Enhancements</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo6"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Conversion Rate Optimization (CRO)", "minHours": 6, "maxHours": 18, "markup": 85, "hourlyRate": 100}'
+                                    />
+                                    <label for="seo6" class="service-label">Conversion Rate Optimization (CRO)</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="seo7"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Performance Optimization (Site Speed)", "minHours": 8, "maxHours": 20, "markup": 90, "hourlyRate": 110}'
+                                    />
+                                    <label for="seo7" class="service-label">Performance Optimization (Site Speed)</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="setup" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Shopify Plus Onboarding & Launch Setup", "minHours": 12, "maxHours": 25, "markup": 100, "hourlyRate": 120}'
+                                    />
+                                    <label for="setup1" class="service-label">Shopify Plus Onboarding & Launch Setup</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Shopify Store Setup & Configuration", "minHours": 8, "maxHours": 18, "markup": 85, "hourlyRate": 95}'
+                                    />
+                                    <label for="setup2" class="service-label">Shopify Store Setup & Configuration</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Content & Catalog Management", "minHours": 5, "maxHours": 15, "markup": 70, "hourlyRate": 70}'
+                                    />
+                                    <label for="setup3" class="service-label">Content & Catalog Management</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup4"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Ongoing Maintenance & Support", "minHours": 3, "maxHours": 10, "markup": 75, "hourlyRate": 85}'
+                                    />
+                                    <label for="setup4" class="service-label">Ongoing Maintenance & Support</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup5"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Shopify Training & Documentation", "minHours": 4, "maxHours": 12, "markup": 80, "hourlyRate": 90}'
+                                    />
+                                    <label for="setup5" class="service-label">Shopify Training & Documentation</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="setup6"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Accessibility Compliance Audit & Fixes", "minHours": 8, "maxHours": 20, "markup": 90, "hourlyRate": 110}'
+                                    />
+                                    <label for="setup6" class="service-label">Accessibility Compliance Audit & Fixes</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="website" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="website1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Website Structure Planning", "minHours": 4, "maxHours": 10, "markup": 75, "hourlyRate": 85}'
+                                    />
+                                    <label for="website1" class="service-label">Website Structure Planning</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="website2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Information Architecture", "minHours": 6, "maxHours": 15, "markup": 80, "hourlyRate": 90}'
+                                    />
+                                    <label for="website2" class="service-label">Information Architecture</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="website3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Navigation Design", "minHours": 3, "maxHours": 8, "markup": 70, "hourlyRate": 80}'
+                                    />
+                                    <label for="website3" class="service-label">Navigation Design</label>
+                                </div>
+                            </div>
+
+                            <div class="services-grid" id="contact" style="display: none">
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="contact1"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Contact Form Implementation", "minHours": 2, "maxHours": 6, "markup": 70, "hourlyRate": 75}'
+                                    />
+                                    <label for="contact1" class="service-label">Contact Form Implementation</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="contact2"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Live Chat Integration", "minHours": 3, "maxHours": 8, "markup": 75, "hourlyRate": 85}'
+                                    />
+                                    <label for="contact2" class="service-label">Live Chat Integration</label>
+                                </div>
+                                <div class="service-item">
+                                    <input
+                                        type="checkbox"
+                                        id="contact3"
+                                        class="service-checkbox"
+                                        data-service='{"name":"Customer Support System Setup", "minHours": 5, "maxHours": 12, "markup": 80, "hourlyRate": 90}'
+                                    />
+                                    <label for="contact3" class="service-label">Customer Support System Setup</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="selected-services">
+                        <h2><i class="fas fa-check-circle"></i> Selected Services</h2>
+                        <div id="selected-services-list">
+                            <div class="empty-state">
+                                <i class="fas fa-clipboard-list"></i>
+                                <p>No services selected yet</p>
+                                <p>Check the services you need from the categories above.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pricing-section">
+                        <h2><i class="fas fa-chart-pie"></i> Project Summary</h2>
+                        <div class="summary-card">
+                            <table class="summary-table" id="summary-table" style="display: none">
+                                <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Min Hours</th>
+                                        <th>Max Hours</th>
+                                        <th>Markup (%)</th>
+                                        <th>Rate/Hour</th>
+                                        <th>Min Price</th>
+                                        <th>Max Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summary-tbody"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td>TOTAL</td>
+                                        <td id="total-min-hours">0</td>
+                                        <td id="total-max-hours">0</td>
+                                        <td>-</td>
+                                        <td>-</td>
+                                        <td id="total-min-price">$0.00</td>
+                                        <td id="total-max-price">$0.00</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            <div class="service-total" id="grand-total" style="display: none">
+                                Grand Total: <span id="grand-total-range">$0.00 - $0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-outline"><i class="fas fa-save"></i> Save Draft</button>
+                        <button class="btn btn-primary" id="save-project"><i class="fas fa-check"></i> Save Project</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let selectedServices = {};
+
+                // Animated entrance for stat cards
+                const statCards = document.querySelectorAll(".stat-card");
+                statCards.forEach((card, index) => {
+                    card.style.opacity = "0";
+                    card.style.transform = "translateY(20px)";
+                    card.style.transition = "all 0.4s ease";
+
+                    setTimeout(
+                        () => {
+                            card.style.opacity = "1";
+                            card.style.transform = "translateY(0)";
+                        },
+                        100 + index * 100
+                    );
+                });
+
+                // Category switching with smooth transitions
+                const categoryBtns = document.querySelectorAll(".category-btn");
+                const serviceGrids = document.querySelectorAll(".services-grid");
+
+                categoryBtns.forEach((btn) => {
+                    btn.addEventListener("click", () => {
+                        // Deactivate all buttons with transition
+                        categoryBtns.forEach((b) => {
+                            b.classList.remove("active");
+                            b.style.transition = "all 0.3s ease";
+                        });
+
+                        // Fade out all grids
+                        serviceGrids.forEach((grid) => {
+                            grid.style.opacity = "0";
+                            grid.style.transform = "translateY(10px)";
+                            setTimeout(() => {
+                                grid.style.display = "none";
+                            }, 200);
+                        });
+
+                        // Activate current button
+                        btn.classList.add("active");
+
+                        // Show current grid with fade in
+                        const category = btn.dataset.category;
+                        const grid = document.getElementById(category);
+                        if (grid) {
+                            setTimeout(() => {
+                                grid.style.display = "grid";
+                                grid.style.opacity = "0";
+                                grid.style.transform = "translateY(10px)";
+
+                                // Force reflow
+                                void grid.offsetWidth;
+
+                                grid.style.transition = "all 0.3s ease";
+                                grid.style.opacity = "1";
+                                grid.style.transform = "translateY(0)";
+                            }, 250);
+                        }
+                    });
+                });
+
+                // Service selection with enhanced UI feedback
+                const checkboxes = document.querySelectorAll(".service-checkbox");
+                const selectedServicesList = document.getElementById("selected-services-list");
+
+                checkboxes.forEach((checkbox) => {
+                    checkbox.addEventListener("change", function () {
+                        // Add visual feedback when checkbox is clicked
+                        const serviceItem = this.closest(".service-item");
+                        if (this.checked) {
+                            serviceItem.style.borderColor = "var(--primary)";
+                            serviceItem.style.backgroundColor = "rgba(59, 130, 246, 0.05)";
+
+                            // Add pulse animation
+                            serviceItem.style.animation = "pulse 0.5s";
+                            setTimeout(() => {
+                                serviceItem.style.animation = "";
+                            }, 500);
+                        } else {
+                            serviceItem.style.borderColor = "var(--border)";
+                            serviceItem.style.backgroundColor = "var(--card-bg)";
+                        }
+
+                        updateSelectedServices();
+                    });
+                });
+
+                function updateSelectedServices() {
+                    selectedServices = {};
+
+                    checkboxes.forEach((checkbox) => {
+                        if (checkbox.checked) {
+                            const serviceData = JSON.parse(checkbox.getAttribute("data-service"));
+                            selectedServices[serviceData.name] = serviceData;
+                        }
+                    });
+
+                    if (Object.keys(selectedServices).length === 0) {
+                        selectedServicesList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <p>No services selected yet</p>
+                            <p>Check the services you need from the categories above.</p>
+                        </div>
+                    `;
+                    } else {
+                        // Fade out existing items before replacing
+                        selectedServicesList.style.opacity = "0";
+                        selectedServicesList.style.transform = "translateY(10px)";
+
+                        setTimeout(() => {
+                            selectedServicesList.innerHTML = Object.values(selectedServices)
+                                .map(
+                                    (service, index) => `
+                            <div class="selected-service-item" data-service-name="${service.name}" style="opacity: 0; transform: translateY(10px); transition: all 0.3s ease; transition-delay: ${index * 50}ms;">
+                                <div class="service-details">
+                                    <div class="service-title">${service.name}</div>
+                                    <div class="service-params">
+                                        <div>
+                                            <label class="param-label">Min Hours</label>
+                                            <input type="number" class="param-input" data-param="minHours" value="${service.minHours}">
+                                        </div>
+                                        <div>
+                                            <label class="param-label">Max Hours</label>
+                                            <input type="number" class="param-input" data-param="maxHours" value="${service.maxHours}">
+                                        </div>
+                                        <div>
+                                            <label class="param-label">Markup (%)</label>
+                                            <input type="number" class="param-input" data-param="markup" value="${service.markup}">
+                                        </div>
+                                        <div>
+                                            <label class="param-label">Rate/Hour ($)</label>
+                                            <input type="number" class="param-input" data-param="hourlyRate" value="${service.hourlyRate}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="remove-service" data-service-name="${service.name}">×</button>
+                                <div class="service-price" data-service-name="${service.name}">
+                                    ${calculateServicePrice(service).min.toFixed(2)} - ${calculateServicePrice(service).max.toFixed(2)}
+                                </div>
+                            </div>
+                        `
+                                )
+                                .join("");
+
+                            // Fade in new items
+                            selectedServicesList.style.opacity = "1";
+                            selectedServicesList.style.transform = "translateY(0)";
+
+                            // Animate in each service item with a staggered delay
+                            setTimeout(() => {
+                                document.querySelectorAll(".selected-service-item").forEach((item) => {
+                                    item.style.opacity = "1";
+                                    item.style.transform = "translateY(0)";
+                                });
+                            }, 50);
+
+                            // Add event listeners to parameter inputs
+                            document.querySelectorAll(".param-input").forEach((input) => {
+                                input.addEventListener("input", function () {
+                                    const serviceItem = this.closest(".selected-service-item");
+                                    const serviceName = serviceItem.getAttribute("data-service-name");
+                                    const param = this.getAttribute("data-param");
+                                    const value = parseFloat(this.value) || 0;
+
+                                    selectedServices[serviceName][param] = value;
+                                    updateServicePrice(serviceName);
+                                    updateSummaryTable();
+                                });
+
+                                // Add focus animation
+                                input.addEventListener("focus", function () {
+                                    this.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.3)";
+                                });
+
+                                input.addEventListener("blur", function () {
+                                    this.style.boxShadow = "";
+                                });
+                            });
+
+                            // Add event listeners to remove buttons with animation
+                            document.querySelectorAll(".remove-service").forEach((btn) => {
+                                btn.addEventListener("click", function () {
+                                    const serviceName = this.getAttribute("data-service-name");
+                                    const serviceItem = this.closest(".selected-service-item");
+
+                                    // Animate removal
+                                    serviceItem.style.opacity = "0";
+                                    serviceItem.style.transform = "translateY(-10px)";
+
+                                    setTimeout(() => {
+                                        // Find and uncheck the corresponding checkbox
+                                        checkboxes.forEach((checkbox) => {
+                                            const serviceData = JSON.parse(checkbox.getAttribute("data-service"));
+                                            if (serviceData.name === serviceName) {
+                                                checkbox.checked = false;
+                                                // Reset the service item style
+                                                const item = checkbox.closest(".service-item");
+                                                item.style.borderColor = "var(--border)";
+                                                item.style.backgroundColor = "var(--card-bg)";
+                                            }
+                                        });
+
+                                        updateSelectedServices();
+                                    }, 300);
+                                });
+                            });
+                        }, 200);
+                    }
+
+                    updateSummaryTable();
+                }
+
+                function calculateServicePrice(service) {
+                    const markupMultiplier = 1 + service.markup / 100;
+                    const minPrice = service.minHours * service.hourlyRate * markupMultiplier;
+                    const maxPrice = service.maxHours * service.hourlyRate * markupMultiplier;
+                    return { min: minPrice, max: maxPrice };
+                }
+
+                function updateServicePrice(serviceName) {
+                    const service = selectedServices[serviceName];
+                    const priceRange = calculateServicePrice(service);
+                    const priceElement = document.querySelector(`.service-price[data-service-name="${serviceName}"]`);
+                    if (priceElement) {
+                        // Animate price change
+                        priceElement.style.transform = "scale(1.05)";
+                        priceElement.style.transition = "transform 0.2s ease";
+
+                        setTimeout(() => {
+                            priceElement.textContent = `${priceRange.min.toFixed(2)} - ${priceRange.max.toFixed(2)}`;
+
+                            setTimeout(() => {
+                                priceElement.style.transform = "scale(1)";
+                            }, 100);
+                        }, 100);
+                    }
+                }
+
+                function updateSummaryTable() {
+                    const summaryTable = document.getElementById("summary-table");
+                    const summaryTbody = document.getElementById("summary-tbody");
+                    const grandTotal = document.getElementById("grand-total");
+
+                    if (Object.keys(selectedServices).length === 0) {
+                        if (summaryTable.style.display !== "none") {
+                            // Animate hiding the table
+                            summaryTable.style.opacity = "0";
+                            summaryTable.style.transform = "translateY(-10px)";
+
+                            grandTotal.style.opacity = "0";
+
+                            setTimeout(() => {
+                                summaryTable.style.display = "none";
+                                grandTotal.style.display = "none";
+                            }, 300);
+                        }
+                        return;
+                    }
+
+                    let totalMinHours = 0;
+                    let totalMaxHours = 0;
+                    let totalMinPrice = 0;
+                    let totalMaxPrice = 0;
+
+                    const tableHTML = Object.values(selectedServices)
+                        .map((service) => {
+                            const priceRange = calculateServicePrice(service);
+                            totalMinHours += service.minHours;
+                            totalMaxHours += service.maxHours;
+                            totalMinPrice += priceRange.min;
+                            totalMaxPrice += priceRange.max;
+
+                            return `
+                        <tr>
+                            <td>${service.name}</td>
+                            <td>${service.minHours}</td>
+                            <td>${service.maxHours}</td>
+                            <td>${service.markup}%</td>
+                            <td>$${service.hourlyRate}</td>
+                            <td>$${priceRange.min.toFixed(2)}</td>
+                            <td>$${priceRange.max.toFixed(2)}</td>
+                        </tr>
+                    `;
+                        })
+                        .join("");
+
+                    // If table is currently hidden, prepare for showing with animation
+                    if (summaryTable.style.display === "none") {
+                        summaryTable.style.opacity = "0";
+                        summaryTable.style.transform = "translateY(10px)";
+                        summaryTable.style.display = "table";
+
+                        grandTotal.style.opacity = "0";
+                        grandTotal.style.display = "flex";
+                    }
+
+                    // Update content
+                    summaryTbody.innerHTML = tableHTML;
+                    document.getElementById("total-min-hours").textContent = totalMinHours;
+                    document.getElementById("total-max-hours").textContent = totalMaxHours;
+                    document.getElementById("total-min-price").textContent = `$${totalMinPrice.toFixed(2)}`;
+                    document.getElementById("total-max-price").textContent = `$${totalMaxPrice.toFixed(2)}`;
+                    document.getElementById("grand-total-range").textContent =
+                        `$${totalMinPrice.toFixed(2)} - $${totalMaxPrice.toFixed(2)}`;
+
+                    // Animate in
+                    setTimeout(() => {
+                        summaryTable.style.opacity = "1";
+                        summaryTable.style.transform = "translateY(0)";
+
+                        setTimeout(() => {
+                            grandTotal.style.opacity = "1";
+                        }, 200);
+                    }, 50);
+                }
+
+                // Save project button with animation
+                document.getElementById("save-project").addEventListener("click", function () {
+                    // Add click animation
+                    this.style.transform = "scale(0.95)";
+                    setTimeout(() => {
+                        this.style.transform = "scale(1)";
+                    }, 150);
+
+                    const projectData = {
+                        projectId:
+                            "PRJ-" +
+                            new Date().getFullYear() +
+                            "-" +
+                            Math.floor(Math.random() * 1000)
+                                .toString()
+                                .padStart(3, "0"),
+                        date: new Date().toISOString(),
+                        services: selectedServices,
+                        totals: {
+                            minHours: parseInt(document.getElementById("total-min-hours").textContent),
+                            maxHours: parseInt(document.getElementById("total-max-hours").textContent),
+                            minPrice: document.getElementById("total-min-price").textContent,
+                            maxPrice: document.getElementById("total-max-price").textContent,
+                        },
+                    };
+
+                    console.log("Project Data:", projectData);
+
+                    // Create a success notification
+                    const notification = document.createElement("div");
+                    notification.style.position = "fixed";
+                    notification.style.bottom = "-100px";
+                    notification.style.left = "50%";
+                    notification.style.transform = "translateX(-50%)";
+                    notification.style.backgroundColor = "var(--success)";
+                    notification.style.color = "white";
+                    notification.style.padding = "1rem 2rem";
+                    notification.style.borderRadius = "var(--radius)";
+                    notification.style.boxShadow = "var(--shadow-lg)";
+                    notification.style.zIndex = "1000";
+                    notification.style.transition = "all 0.3s ease";
+                    notification.style.display = "flex";
+                    notification.style.alignItems = "center";
+                    notification.style.gap = "0.75rem";
+                    notification.innerHTML = `
+                        <i class="fas fa-check-circle" style="font-size: 1.25rem;"></i>
+                        <div>
+                            <div style="font-weight: 600;">Project Saved!</div>
+                            <div style="font-size: 0.85rem; opacity: 0.9;">Project ID: ${projectData.projectId}</div>
+                        </div>
+                    `;
+
+                    document.body.appendChild(notification);
+
+                    // Animate notification
+                    setTimeout(() => {
+                        notification.style.bottom = "2rem";
+
+                        setTimeout(() => {
+                            notification.style.bottom = "-100px";
+
+                            setTimeout(() => {
+                                document.body.removeChild(notification);
+                            }, 300);
+                        }, 3000);
+                    }, 100);
+                });
+
+                // Add CSS for pulse animation
+                const style = document.createElement("style");
+                style.textContent = `
+                    @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.02); }
+                        100% { transform: scale(1); }
+                    }
+                `;
+                document.head.appendChild(style);
+            });
+        </script>
+    </body>
+</html>
